@@ -1,4 +1,5 @@
 """Modele domeny finansowej."""
+
 from __future__ import annotations
 
 from django.conf import settings

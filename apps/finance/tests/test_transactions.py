@@ -1,4 +1,5 @@
 """Testy CRUD transakcji, walidacji i izolacji danych."""
+
 import pytest
 
 from apps.finance.models import Transaction

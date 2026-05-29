@@ -2,6 +2,7 @@
 
 Oddziela zapytania do bazy od widokow i logiki biznesowej.
 """
+
 from __future__ import annotations
 
 import datetime
@@ -51,12 +52,12 @@ def budget_spent(budget: Budget) -> Decimal:
 def stats_summary(*, user: AbstractBaseUser, month: int, year: int) -> dict:
     """Przychody, wydatki i bilans dla danego miesiaca."""
     qs = Transaction.objects.filter(user=user, date__month=month, date__year=year)
-    income = qs.filter(type=TransactionType.INCOME).aggregate(
-        t=Sum("amount")
-    )["t"] or Decimal("0")
-    expense = qs.filter(type=TransactionType.EXPENSE).aggregate(
-        t=Sum("amount")
-    )["t"] or Decimal("0")
+    income = qs.filter(type=TransactionType.INCOME).aggregate(t=Sum("amount"))[
+        "t"
+    ] or Decimal("0")
+    expense = qs.filter(type=TransactionType.EXPENSE).aggregate(t=Sum("amount"))[
+        "t"
+    ] or Decimal("0")
     return {
         "month": month,
         "year": year,

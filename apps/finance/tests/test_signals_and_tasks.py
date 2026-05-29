@@ -1,4 +1,5 @@
 """Testy zdarzen (signals) i zadan raportow."""
+
 import pytest
 
 from apps.finance.models import Budget, Category, Notification, Report, Transaction

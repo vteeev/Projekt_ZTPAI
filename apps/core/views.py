@@ -1,4 +1,5 @@
 """Endpointy infrastrukturalne (health-check)."""
+
 from django.db import connection
 from rest_framework.permissions import AllowAny
 from rest_framework.request import Request

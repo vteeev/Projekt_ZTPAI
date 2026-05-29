@@ -1,4 +1,5 @@
 """Jednolita obsluga bledow dla API (kryterium 4.0)."""
+
 from __future__ import annotations
 
 from rest_framework.response import Response

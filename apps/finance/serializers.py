@@ -1,4 +1,5 @@
 """Serializery (DTO) domeny finansowej."""
+
 from decimal import Decimal
 
 from rest_framework import serializers

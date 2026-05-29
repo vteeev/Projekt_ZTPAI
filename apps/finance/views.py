@@ -3,6 +3,7 @@
 Widoki sa cienkie: walidacje robi serializer (DTO), a operacje zapisu
 deleguja do warstwy services. Odczyt korzysta z warstwy selectors.
 """
+
 from django.http import FileResponse, Http404
 from rest_framework import viewsets
 from rest_framework.decorators import action

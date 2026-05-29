@@ -3,6 +3,7 @@
 Po zapisaniu wydatku sprawdzamy, czy nie przekroczono budzetu na dany
 miesiac/kategorie i - jesli tak - tworzymy powiadomienie dla uzytkownika.
 """
+
 from __future__ import annotations
 
 from datetime import date as date_cls

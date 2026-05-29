@@ -1,4 +1,5 @@
 """Testy budzetow, statystyk i warstwy selectors."""
+
 import pytest
 
 from apps.finance import selectors
@@ -59,9 +60,7 @@ def test_stats_by_category(user, food):
 
 
 def test_cannot_use_foreign_category(auth_client, other_user):
-    foreign = Category.objects.create(
-        user=other_user, name="Cudza", type="EXPENSE"
-    )
+    foreign = Category.objects.create(user=other_user, name="Cudza", type="EXPENSE")
     resp = auth_client.post(
         "/api/transactions/",
         {
