@@ -20,6 +20,7 @@ export default function Layout() {
           </NavLink>
           <NavLink to="/transactions">Transakcje</NavLink>
           <NavLink to="/budgets">Budzety</NavLink>
+          <NavLink to="/reports">Raporty</NavLink>
         </nav>
         <div className="sidebar-footer">
           <span>{user?.username}</span>
