@@ -3,7 +3,7 @@ from decimal import Decimal
 
 from rest_framework import serializers
 
-from .models import Budget, Category, Report, Transaction
+from .models import Budget, Category, Notification, Report, Transaction
 from .selectors import budget_spent
 
 
@@ -132,3 +132,10 @@ class ReportSerializer(serializers.ModelSerializer):
             "created_at",
             "completed_at",
         ]
+
+
+class NotificationSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Notification
+        fields = ["id", "message", "is_read", "created_at"]
+        read_only_fields = ["id", "message", "created_at"]

@@ -7,6 +7,7 @@ from .views import (
     ByCategoryStatsView,
     CategoryViewSet,
     MonthlyStatsView,
+    NotificationViewSet,
     ReportViewSet,
     SummaryStatsView,
     TransactionViewSet,
@@ -17,6 +18,7 @@ router.register(r"transactions", TransactionViewSet, basename="transaction")
 router.register(r"categories", CategoryViewSet, basename="category")
 router.register(r"budgets", BudgetViewSet, basename="budget")
 router.register(r"reports", ReportViewSet, basename="report")
+router.register(r"notifications", NotificationViewSet, basename="notification")
 
 urlpatterns = [
     path("stats/summary/", SummaryStatsView.as_view(), name="stats-summary"),

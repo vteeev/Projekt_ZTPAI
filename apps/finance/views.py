@@ -11,10 +11,11 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 
 from . import selectors, services
-from .models import Report
+from .models import Notification, Report
 from .serializers import (
     BudgetSerializer,
     CategorySerializer,
+    NotificationSerializer,
     ReportSerializer,
     TransactionSerializer,
 )
@@ -88,6 +89,18 @@ class ReportViewSet(viewsets.ModelViewSet):
         if not report.file:
             raise Http404("Plik nie jest jeszcze gotowy.")
         return FileResponse(report.file.open("rb"), as_attachment=True)
+
+
+class NotificationViewSet(viewsets.ModelViewSet):
+    """Powiadomienia uzytkownika (np. przekroczenie budzetu).
+
+    Tworzone zdarzeniowo przez sygnaly - tu tylko odczyt i oznaczanie."""
+
+    serializer_class = NotificationSerializer
+    http_method_names = ["get", "patch", "delete"]
+
+    def get_queryset(self):
+        return Notification.objects.filter(user=self.request.user)
 
 
 def _resolve_period(request: Request) -> tuple[int, int]:
