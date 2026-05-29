@@ -14,6 +14,12 @@ export default function Transactions() {
   const [categories, setCategories] = useState([]);
   const [form, setForm] = useState(EMPTY);
   const [newCat, setNewCat] = useState("");
+  const randomColor = () =>
+    "#" +
+    Math.floor(Math.random() * 0xffffff)
+      .toString(16)
+      .padStart(6, "0");
+  const [newCatColor, setNewCatColor] = useState(randomColor);
   const [error, setError] = useState("");
 
   const load = () => {
@@ -37,8 +43,13 @@ export default function Transactions() {
 
   const addCategory = async () => {
     if (!newCat) return;
-    await api.post("/categories/", { name: newCat, type: form.type });
+    await api.post("/categories/", {
+      name: newCat,
+      type: form.type,
+      color: newCatColor,
+    });
     setNewCat("");
+    setNewCatColor(randomColor());
     load();
   };
 
@@ -96,6 +107,12 @@ export default function Transactions() {
           placeholder="Nowa kategoria"
           value={newCat}
           onChange={(e) => setNewCat(e.target.value)}
+        />
+        <input
+          type="color"
+          title="Kolor kategorii"
+          value={newCatColor}
+          onChange={(e) => setNewCatColor(e.target.value)}
         />
         <button type="button" onClick={addCategory}>
           Dodaj kategorie ({form.type})

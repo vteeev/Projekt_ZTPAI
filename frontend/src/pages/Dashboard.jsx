@@ -25,6 +25,21 @@ const MONTHS = [
   "Lip", "Sie", "Wrz", "Paz", "Lis", "Gru",
 ];
 
+// Generuje rozlozone kolory na kole barw (gdy kategorie nie maja wlasnego koloru
+// lub kolory sie powtarzaja - kazdy wycinek dostaje inny kolor).
+function distinctColors(items) {
+  const used = new Set();
+  return items.map((c, i) => {
+    let color = c.color;
+    if (!color || used.has(color)) {
+      const hue = Math.round((360 * i) / Math.max(items.length, 1));
+      color = `hsl(${hue}, 65%, 55%)`;
+    }
+    used.add(color);
+    return color;
+  });
+}
+
 export default function Dashboard() {
   const now = new Date();
   const [summary, setSummary] = useState(null);
@@ -67,7 +82,7 @@ export default function Dashboard() {
                 datasets: [
                   {
                     data: byCat.map((c) => c.total),
-                    backgroundColor: byCat.map((c) => c.color),
+                    backgroundColor: distinctColors(byCat),
                   },
                 ],
               }}
