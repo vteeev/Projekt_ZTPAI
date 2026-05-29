@@ -69,7 +69,7 @@ Status etapów: [PLAN_PROJEKTU.md](PLAN_PROJEKTU.md).
 - [x] Etap 5 — Domena (kategorie, budżety, statystyki)
 - [x] Etap 6 — Celery (raporty, eksport, AI)
 - [x] Etap 7 — Events (signals)
-- [ ] Etap 8 — Testy jednostkowe
+- [x] Etap 8 — Testy jednostkowe (19 testów)
 - [ ] Etap 9 — Czysty kod
 - [ ] Etap 10 — Frontend React
 - [ ] Etap 11 — Dokumentacja + demo

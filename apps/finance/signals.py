@@ -5,6 +5,8 @@ miesiac/kategorie i - jesli tak - tworzymy powiadomienie dla uzytkownika.
 """
 from __future__ import annotations
 
+from datetime import date as date_cls
+
 from django.db.models.signals import post_save
 from django.dispatch import receiver
 
@@ -18,10 +20,16 @@ def check_budget_on_transaction(sender, instance: Transaction, created, **kwargs
     if instance.type != TransactionType.EXPENSE or instance.user_id is None:
         return
 
+    # DateField nie koercuje wartosci w pamieci - zabezpieczamy sie, gdy
+    # transakcja powstala z data jako string (fixtures, skrypty).
+    tx_date = instance.date
+    if isinstance(tx_date, str):
+        tx_date = date_cls.fromisoformat(tx_date)
+
     budgets = Budget.objects.filter(
         user_id=instance.user_id,
-        month=instance.date.month,
-        year=instance.date.year,
+        month=tx_date.month,
+        year=tx_date.year,
     )
     for budget in budgets:
         # budzet kategorii musi pasowac do kategorii transakcji;
