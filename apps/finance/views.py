@@ -3,17 +3,22 @@
 Widoki sa cienkie: walidacje robi serializer (DTO), a operacje zapisu
 deleguja do warstwy services. Odczyt korzysta z warstwy selectors.
 """
+from django.http import FileResponse, Http404
 from rest_framework import viewsets
+from rest_framework.decorators import action
 from rest_framework.request import Request
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
 from . import selectors, services
+from .models import Report
 from .serializers import (
     BudgetSerializer,
     CategorySerializer,
+    ReportSerializer,
     TransactionSerializer,
 )
+from .tasks import generate_report
 
 
 class TransactionViewSet(viewsets.ModelViewSet):
@@ -61,6 +66,28 @@ class BudgetViewSet(viewsets.ModelViewSet):
         serializer.instance = services.create_budget(
             user=self.request.user, **serializer.validated_data
         )
+
+
+class ReportViewSet(viewsets.ModelViewSet):
+    """Zlecanie i pobieranie raportow (CSV/PDF/AI) generowanych asynchronicznie."""
+
+    serializer_class = ReportSerializer
+    http_method_names = ["get", "post", "delete"]
+
+    def get_queryset(self):
+        return Report.objects.filter(user=self.request.user)
+
+    def perform_create(self, serializer) -> None:
+        report = serializer.save(user=self.request.user)
+        # Wrzucenie zadania do kolejki Redis -> przetwarza je worker Celery
+        generate_report.delay(report.id)
+
+    @action(detail=True, methods=["get"])
+    def download(self, request: Request, pk: str | None = None) -> FileResponse:
+        report = self.get_object()
+        if not report.file:
+            raise Http404("Plik nie jest jeszcze gotowy.")
+        return FileResponse(report.file.open("rb"), as_attachment=True)
 
 
 def _resolve_period(request: Request) -> tuple[int, int]:

@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from .models import Budget, Category, Transaction
+from .models import Budget, Category, Report, Transaction
 
 
 @admin.register(Category)
@@ -22,3 +22,9 @@ class TransactionAdmin(admin.ModelAdmin):
 class BudgetAdmin(admin.ModelAdmin):
     list_display = ("id", "category", "month", "year", "amount", "user")
     list_filter = ("year", "month")
+
+
+@admin.register(Report)
+class ReportAdmin(admin.ModelAdmin):
+    list_display = ("id", "type", "status", "month", "year", "user", "created_at")
+    list_filter = ("type", "status")

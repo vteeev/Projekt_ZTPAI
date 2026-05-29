@@ -113,3 +113,43 @@ class Budget(models.Model):
     def __str__(self) -> str:
         scope = self.category.name if self.category else "Laczny"
         return f"Budzet {scope} {self.month:02d}/{self.year}: {self.amount}"
+
+
+class Report(models.Model):
+    """Asynchronicznie generowany raport (CSV/PDF) lub analiza AI wydatkow."""
+
+    class ReportType(models.TextChoices):
+        CSV = "CSV", "Eksport CSV"
+        PDF = "PDF", "Raport PDF"
+        AI = "AI", "Analiza AI"
+
+    class Status(models.TextChoices):
+        PENDING = "PENDING", "Oczekuje"
+        PROCESSING = "PROCESSING", "W trakcie"
+        DONE = "DONE", "Gotowe"
+        FAILED = "FAILED", "Blad"
+
+    user = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE,
+        related_name="reports",
+        null=True,
+        blank=True,
+    )
+    type = models.CharField(max_length=3, choices=ReportType.choices)
+    status = models.CharField(
+        max_length=10, choices=Status.choices, default=Status.PENDING
+    )
+    month = models.PositiveSmallIntegerField(null=True, blank=True)
+    year = models.PositiveSmallIntegerField(null=True, blank=True)
+    file = models.FileField(upload_to="reports/", null=True, blank=True)
+    result = models.TextField(blank=True, default="")  # tekst analizy AI
+    error = models.TextField(blank=True, default="")
+    created_at = models.DateTimeField(auto_now_add=True)
+    completed_at = models.DateTimeField(null=True, blank=True)
+
+    class Meta:
+        ordering = ["-created_at"]
+
+    def __str__(self) -> str:
+        return f"{self.get_type_display()} [{self.status}] #{self.pk}"

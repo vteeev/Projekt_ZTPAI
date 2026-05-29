@@ -67,7 +67,7 @@ Status etapów: [PLAN_PROJEKTU.md](PLAN_PROJEKTU.md).
 - [x] Etap 3 — Warstwy, DTO, walidacja, obsługa błędów
 - [x] Etap 4 — Security JWT (ocena 4.0 osiągnięta)
 - [x] Etap 5 — Domena (kategorie, budżety, statystyki)
-- [ ] Etap 6 — Celery (raporty, eksport, AI)
+- [x] Etap 6 — Celery (raporty, eksport, AI)
 - [ ] Etap 7 — Events (signals)
 - [ ] Etap 8 — Testy jednostkowe
 - [ ] Etap 9 — Czysty kod

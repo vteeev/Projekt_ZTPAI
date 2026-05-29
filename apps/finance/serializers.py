@@ -3,7 +3,7 @@ from decimal import Decimal
 
 from rest_framework import serializers
 
-from .models import Budget, Category, Transaction
+from .models import Budget, Category, Report, Transaction
 from .selectors import budget_spent
 
 
@@ -104,3 +104,31 @@ class BudgetSerializer(serializers.ModelSerializer):
         if obj.amount == 0:
             return 0.0
         return round(float(budget_spent(obj) / obj.amount) * 100, 1)
+
+
+class ReportSerializer(serializers.ModelSerializer):
+    file_url = serializers.FileField(source="file", read_only=True)
+
+    class Meta:
+        model = Report
+        fields = [
+            "id",
+            "type",
+            "status",
+            "month",
+            "year",
+            "file_url",
+            "result",
+            "error",
+            "created_at",
+            "completed_at",
+        ]
+        read_only_fields = [
+            "id",
+            "status",
+            "file_url",
+            "result",
+            "error",
+            "created_at",
+            "completed_at",
+        ]
