@@ -10,10 +10,42 @@ class TransactionType(models.TextChoices):
     EXPENSE = "EXPENSE", "Wydatek"
 
 
+class Category(models.Model):
+    """Kategoria transakcji (np. Jedzenie, Wyplata)."""
+
+    user = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE,
+        related_name="categories",
+        null=True,
+        blank=True,
+    )
+    name = models.CharField(max_length=100)
+    type = models.CharField(
+        max_length=7,
+        choices=TransactionType.choices,
+        default=TransactionType.EXPENSE,
+    )
+    color = models.CharField(max_length=7, default="#3b82f6")  # hex do wykresow
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = ["name"]
+        constraints = [
+            models.UniqueConstraint(
+                fields=["user", "name", "type"],
+                name="unique_category_per_user",
+            )
+        ]
+        verbose_name_plural = "Categories"
+
+    def __str__(self) -> str:
+        return self.name
+
+
 class Transaction(models.Model):
     """Pojedyncza transakcja: przychod albo wydatek."""
 
-    # user jest na razie opcjonalny; izolacja per-user dochodzi w Etapie 4 (JWT)
     user = models.ForeignKey(
         settings.AUTH_USER_MODEL,
         on_delete=models.CASCADE,
@@ -27,8 +59,13 @@ class Transaction(models.Model):
         default=TransactionType.EXPENSE,
     )
     amount = models.DecimalField(max_digits=12, decimal_places=2)
-    # category bedzie ForeignKey do modelu Category w Etapie 5
-    category = models.CharField(max_length=100, blank=True, default="")
+    category = models.ForeignKey(
+        Category,
+        on_delete=models.SET_NULL,
+        related_name="transactions",
+        null=True,
+        blank=True,
+    )
     description = models.CharField(max_length=255, blank=True, default="")
     date = models.DateField()
     created_at = models.DateTimeField(auto_now_add=True)
@@ -39,3 +76,40 @@ class Transaction(models.Model):
 
     def __str__(self) -> str:
         return f"{self.get_type_display()} {self.amount} ({self.date})"
+
+
+class Budget(models.Model):
+    """Budzet miesieczny - limit wydatkow na dany miesiac i opcjonalnie kategorie."""
+
+    user = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE,
+        related_name="budgets",
+        null=True,
+        blank=True,
+    )
+    category = models.ForeignKey(
+        Category,
+        on_delete=models.CASCADE,
+        related_name="budgets",
+        null=True,
+        blank=True,
+        help_text="Puste = budzet laczny na wszystkie kategorie.",
+    )
+    month = models.PositiveSmallIntegerField()  # 1-12
+    year = models.PositiveSmallIntegerField()
+    amount = models.DecimalField(max_digits=12, decimal_places=2)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = ["-year", "-month"]
+        constraints = [
+            models.UniqueConstraint(
+                fields=["user", "category", "month", "year"],
+                name="unique_budget_per_period",
+            )
+        ]
+
+    def __str__(self) -> str:
+        scope = self.category.name if self.category else "Laczny"
+        return f"Budzet {scope} {self.month:02d}/{self.year}: {self.amount}"
