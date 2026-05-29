@@ -63,7 +63,7 @@ Status etapów: [PLAN_PROJEKTU.md](PLAN_PROJEKTU.md).
 
 - [x] Etap 0 — Setup środowiska (Docker, szkielet Django+DRF)
 - [x] Etap 1 — Działający Django + baza + health-check + admin
-- [ ] Etap 2 — CRUD encji Transaction
+- [x] Etap 2 — CRUD encji Transaction (ocena 3.0 osiągnięta)
 - [ ] Etap 3 — Warstwy, DTO, walidacja, obsługa błędów
 - [ ] Etap 4 — Security JWT
 - [ ] Etap 5 — Domena (kategorie, budżety, statystyki)
